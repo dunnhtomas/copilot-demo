@@ -1,0 +1,12 @@
+{
+  "name": "copilot-demo",
+  "version": "1.0.0",
+  "description": "Demo repository with GitHub Copilot setup workflow",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["copilot", "github-actions"],
+  "author": "",
+  "license": "MIT"
+}
