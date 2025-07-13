@@ -1,0 +1,83 @@
+name: 🚀 Copilot Setup Steps
+
+'on':
+  # Run on push/PR when workflow files or package files change
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'package*.json'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'package*.json'
+
+  # Allow manual trigger with Node.js version choice
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: 'Node.js version to use'
+        required: true
+        default: '20'
+        type: choice
+        options:
+          - '18'
+          - '20'
+          - '22'
+
+# Security: Minimal permissions
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    name: 🔧 Setup and Verify Node.js Environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # Performance: 10-minute timeout
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version || '20' }}
+          cache: 'npm'  # Built-in npm caching for performance
+
+      - name: ✅ Verify Node.js installation
+        run: |
+          echo "📊 Node.js version: $(node --version)"
+          echo "📦 npm version: $(npm --version)"
+          echo "📍 Node.js path: $(which node)"
+          echo "📍 npm path: $(which npm)"
+
+      - name: 🏗️ Clean install dependencies
+        run: |
+          echo "🧹 Running clean install optimized for Copilot environments..."
+          npm ci --prefer-offline --no-audit --no-fund --progress=false
+
+      - name: 💾 Cache node_modules for future runs
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 🔍 Verify installation
+        run: |
+          echo "📋 Listing installed packages:"
+          npm list --depth=0 || echo "⚠️ No dependencies found (empty project)"
+          echo "💿 Cache info:"
+          npm config get cache
+
+      - name: 🎉 Show completion status
+        run: |
+          echo "✨ Setup completed successfully! ✨"
+          echo "🚀 Environment is ready for GitHub Copilot development"
+          echo "📊 Summary:"
+          echo "  🟢 Node.js: $(node --version)"
+          echo "  📦 npm: $(npm --version)"
+          echo "  ⚡ Cache: Optimized"
+          echo "  🔧 Dependencies: Installed"
+          echo "🎯 Ready to code with Copilot! 🎯"
