@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Push Copilot Workflow to GitHub",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				".github/workflows/copilot-setup-steps.yml"
+			],
+			"group": "build",
+			"isBackground": false
+		}
+	]
+}
